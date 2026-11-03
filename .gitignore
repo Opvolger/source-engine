@@ -37,3 +37,5 @@ waf3*/
 .vscode/
 .depproj/
 source-engine.sln
+build-riscv64/
+install-riscv64/
