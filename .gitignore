@@ -39,3 +39,5 @@ waf3*/
 source-engine.sln
 build-riscv64/
 install-riscv64/
+build-riscv64-*/
+install-riscv64-*/

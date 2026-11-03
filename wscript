@@ -527,6 +527,19 @@ def configure(conf):
 		# char is unsigned by default on ARM and RISC-V, the code assumes x86 (signed)
 		flags += ['-fsigned-char']
 
+	if conf.env.DEST_CPU == 'riscv':
+		# With the V extension, GCC's auto-vectorizer turns plain loops over packed/unaligned
+		# data (e.g. model file structs in R_StudioBuildMeshStrips) into vector loads, and
+		# misaligned *vector* accesses raise SIGBUS on the SpacemiT K1 (scalar ones are fine).
+		# Must come after the optimization flags, which contain -ftree-vectorize.
+		# Explicit SIMD (SSE via SIMDe, aligned 16-byte types) still compiles to RVV.
+		flags += ['-fno-tree-vectorize']
+		# Also do not let GCC inline memcpy/memset as vector loops: the engine copies into
+		# GPU buffers mapped through the PCIe BAR (uncached device memory), and vector stores
+		# there raise a store access fault on the K1 (CVertexBuffer::HandleLateCreation).
+		# glibc's memcpy/memset are scalar. No effect on builds without the V extension.
+		flags += ['-mstringop-strategy=libcall']
+
 	if conf.env.DEST_CPU == 'arm':
 		flags += ['-march=armv7-a', '-mfpu=neon-vfpv4']
 
