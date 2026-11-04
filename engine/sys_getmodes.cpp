@@ -17,6 +17,9 @@ typedef void *HDC;
 #endif
 
 #include "appframework/ilaunchermgr.h"
+#ifdef DXVK
+#include "togl/dxvk_d3d9.h" // Windows types (RECT, GUID, LONG, ...) from DXVK
+#endif
 
 #include "basetypes.h"
 #include "sysexternal.h"
@@ -1126,11 +1129,13 @@ void CVideoMode_Common::DrawNullBackground( void *hHDC, int w, int h )
 
 #ifndef _WIN32
 
+#ifndef DXVK // DXVK's windows_base.h has these
 typedef unsigned char BYTE;
 typedef signed long LONG;
 typedef unsigned long ULONG;
 
 typedef char * LPSTR;
+#endif
 
 typedef struct tagBITMAPINFOHEADER{
     DWORD      biSize;
@@ -1177,7 +1182,9 @@ typedef struct _GUID
 } GUID;
 
 #endif
+#ifndef DXVK
 typedef GUID UUID;
+#endif
 
 #endif //WIN32
 //-----------------------------------------------------------------------------

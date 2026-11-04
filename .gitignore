@@ -41,3 +41,6 @@ build-riscv64/
 install-riscv64/
 build-riscv64-*/
 install-riscv64-*/
+build-dxvk-*/
+dxvk-x86_64/
+dxvk-riscv64/
