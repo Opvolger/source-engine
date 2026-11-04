@@ -1,0 +1,16 @@
+# Build environment for DXVK-native (D3D9 -> Vulkan) for x86_64 (laptop test) and riscv64
+# (Milk-V Jupiter, Debian 13 trixie). Based on the engine's riscv64 cross image.
+#
+#   podman build -t source-engine-dxvk -f scripts/dxvk/Containerfile scripts/dxvk
+FROM localhost/source-engine-riscv64
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    meson ninja-build glslang-tools g++ \
+    libsdl2-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# Native (amd64) builds by default; riscv64 builds use the meson cross file.
+ENV CC= CXX= AR= STRIP= PKG_CONFIG_LIBDIR= PKG_CONFIG_PATH=
+COPY riscv64-cross.txt /usr/local/share/meson/riscv64-cross.txt
+WORKDIR /src

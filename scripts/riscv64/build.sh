@@ -11,6 +11,11 @@
 #
 #   MARCH=rv64gcv_zvl256b_zba_zbb_zbs VARIANT=rvv scripts/riscv64/build.sh
 #
+# VARIANT alone also selects separate directories, e.g. the DXVK-native (Vulkan) build
+# (needs dxvk-riscv64/ from scripts/dxvk/build.sh):
+#
+#   VARIANT=dxvk scripts/riscv64/build.sh --use-dxvk
+#
 # With a vector ISA, -mrvv-vector-bits=zvl is added so GCC uses the fixed VLEN from zvl*b
 # (lets SIMDe's / GCC's generic 128-bit vector types map to RVV). The auto-vectorizer is
 # switched off for riscv in wscript (misaligned vector accesses SIGBUS on the K1). Such binaries only run on
@@ -19,7 +24,7 @@ set -e
 cd "$(dirname "$0")/../.."
 IMAGE=${IMAGE:-source-engine-riscv64}
 
-SUFFIX=
+SUFFIX=${VARIANT:+-$VARIANT}
 FLAGS=
 if [ -n "$MARCH" ]; then
 	SUFFIX=-${VARIANT:-$MARCH}
